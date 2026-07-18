@@ -2527,7 +2527,10 @@ sp<IAfTrack> PlaybackThread::createTrack_l(
     if ((*flags & outputFlags) != *flags) {
         ALOGW("createTrack_l(): mismatch between requested flags (%08x) and output flags (%08x)",
               *flags, outputFlags);
-        *flags = (audio_output_flags_t)(*flags & outputFlags);
+        audio_output_flags_t maskedFlags = (audio_output_flags_t)(*flags & outputFlags);
+        if (maskedFlags != AUDIO_OUTPUT_FLAG_NONE) {
+            *flags = maskedFlags;
+        }
     }
 
     if (isBitPerfect) {
